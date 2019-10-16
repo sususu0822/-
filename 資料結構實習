@@ -1,0 +1,228 @@
+#include<stdio.h>
+#include<stdlib.h>
+#include<string.h>
+
+struct Node{
+	int coef;
+	int pow;
+	struct Node* next;
+};
+typedef struct Node* node;
+
+node newnode(int, int);
+node head=NULL;
+node head_2=NULL;
+node prev=NULL;
+
+int insert(int, int);
+int insert_2(int, int);
+int check(node);
+int print(node);
+//int sum(node);
+//node ccheck(node,node); 
+int poly(node); 
+int main(){
+	int coef,pow;
+	while(1){
+		printf("��J�h����1(�Y�� ����): ");
+		scanf("%d %d",&coef,&pow);
+		if(coef == 0) break;
+		insert(coef, pow);
+		check(head);		
+	}
+	print(head);
+	while(1){
+		printf("��J�h����2(�Y�� ����): ");
+		scanf("%d %d",&coef,&pow);
+		if(coef == 0) break;
+		insert_2(coef, pow);
+		insert(coef, pow);
+		check(head_2);		
+	}
+	poly(head);
+	print(head_2);
+	print(head);
+	//print(ccheck(head,head_2));
+}
+node newnode(int coef, int pow){
+	node add = (node)malloc(sizeof(struct Node));
+	if (add!=NULL){
+		add->coef=coef;
+		add->pow=pow;
+		add->next=NULL;
+	}
+	return add;
+}
+
+int insert(int coef, int pow){
+	node add = newnode(coef,pow);
+	node ptr = head;
+	if(ptr==NULL){ 					//�p�G�������� 
+		head = add;					//�s�W���Ĥ@�� 
+	}else if(add->pow > ptr->pow){	//�p�G�s�W����j��즳���� 
+		add->next=head;				 
+		head=add;
+	}else if(add->pow == ptr->pow){
+		ptr->coef += add->coef;
+		if(ptr->coef == 0){
+			head = ptr->next;
+			free(ptr);
+		}
+	}else{
+		while(ptr->next!=NULL && add->pow < ptr->next->pow){	
+			ptr = ptr->next;
+		}
+		if(add->pow == ptr->pow) ptr->coef += add->coef;
+		else{
+			add->next = ptr->next;
+            ptr->next = add;
+		}
+	}
+}
+int insert_2(int coef, int pow){
+	node add = newnode(coef,pow);
+	node ptr = head_2;
+	if(ptr==NULL){
+		head_2 = add;
+	}else if(add->pow > ptr->pow){
+		add->next=head_2;
+		head_2=add;
+	}else if(add->pow == ptr->pow){
+		ptr->coef += add->coef;
+		if(ptr->coef == 0){
+			head_2 = ptr->next;
+			free(ptr);
+		}
+	}else{
+		while(ptr->next!=NULL&&add->pow < ptr->next->pow){	//���e���U�@�Ӧ��F��B�s�W����p����e�U�@�Ӫ����� 
+			ptr = ptr->next;		//���e��m���U 
+		}
+		if(add->pow == ptr->pow) ptr->coef += add->coef;
+		else{
+			add->next = ptr->next;	//�N�s�W��m���J 
+			ptr->next = add;		//���e���U�@�Ӭ��s�W��m 
+		}	
+	}
+}
+
+int print(node h){
+	node ptr=h;
+	printf("\n========================================================\n");
+	if(ptr->pow==0){
+   		if(ptr->coef<0) printf("%d\n",ptr->coef);
+   		if(ptr->coef>0) printf("%d\n",ptr->coef);
+	}else if(ptr->pow==1){
+		if(ptr->coef<0) printf("%dx",ptr->coef);
+		if(ptr->coef>0) printf("%dx",ptr->coef);
+	}else{
+		if(ptr->coef<0) printf("%dx^%d",ptr->coef,ptr->pow);
+		if(ptr->coef>0) printf("%dx^%d",ptr->coef,ptr->pow);
+	}
+    ptr=ptr->next;
+	while(ptr!=NULL)
+    {
+    	if(ptr->pow==0){
+    		if(ptr->coef<0) printf("%d\n",ptr->coef);
+    		if(ptr->coef>0) printf("+%d\n",ptr->coef);
+		}else if(ptr->pow==1){
+			if(ptr->coef<0) printf("%dx",ptr->coef);
+			if(ptr->coef>0) printf("+%dx",ptr->coef);
+		}else{
+			if(ptr->coef<0) printf("%dx^%d",ptr->coef,ptr->pow);
+			if(ptr->coef>0) printf("+%dx^%d",ptr->coef,ptr->pow);
+		}
+        ptr=ptr->next;
+    }
+    printf("\n========================================================\n");
+}
+
+int check(node h){
+	node ptr = h;
+	while(ptr->next!=NULL)
+    {
+        if(ptr->next->coef==0)
+        {
+            node del=ptr->next;
+            ptr->next=ptr->next->next;
+            free(del);
+            return 1;
+        }
+        else
+            ptr=ptr->next;
+    }
+}
+
+/*int sum(node h){
+	node ptr=h;
+	if(ptr->pow == ptr->next->pow){
+		ptr->next->coef+=ptr->coef;
+		h=ptr->next;
+		free(ptr);
+	}else{
+		while(ptr->next!=NULL){
+			if(ptr->next->pow == ptr->next->next->pow){
+				node del=ptr->next;
+				ptr->next->next->coef += ptr->next->coef;
+				ptr->next=ptr->next->next;
+				free(del);
+			}else{
+				ptr=ptr->next;
+			}
+		}
+	}
+}*/
+int poly(node h){
+	node ptr = h;
+	node nextNode = NULL;
+	while(ptr != NULL){
+		nextNode = ptr->next;
+		if(nextNode == NULL){
+			ptr = NULL;
+		}else if(ptr->pow==nextNode->pow){
+			ptr->coef += nextNode->coef;
+			ptr->next = nextNode->next;
+		}else{
+			ptr = ptr->next;
+		}
+	}
+}
+/*node ccheck(node h, node h2){
+	node ptr=h;
+	node ptr2=h2;
+	node head=NULL;
+	node temp=head;
+	node add;
+	if(head=NULL){
+		if(ptr->pow == ptr2->pow){
+			head->coef = ptr->coef+ptr2->coef;
+			head->pow=ptr->pow;
+			ptr = ptr->next;
+			ptr2=ptr2->next;	
+		}else if(ptr->pow>ptr2->pow){
+			head->coef=ptr->coef;
+			head->pow=ptr->pow;
+			ptr=ptr->next;
+		}else if(ptr->pow<ptr2->pow){
+			head->coef=ptr2->coef;
+			head->pow=ptr2->pow;
+			ptr2=ptr2->next;	
+		}
+	}
+	while(ptr->next!=NULL&&ptr2->next!=NULL){
+		if(ptr->pow == ptr2->pow){
+			add = newnode(ptr->coef+ptr2->coef,ptr->pow);
+			temp->next=add;
+			ptr = ptr->next;
+			ptr2=ptr2->next;	
+		}else if(ptr->pow>ptr2->pow){
+			add = newnode(ptr->coef,ptr->pow);
+			temp->next=add;
+			ptr = ptr->next;
+		}else if(ptr->pow<ptr2->pow){
+			add = newnode(ptr2->coef,ptr2->pow);
+			temp->next=add;
+			ptr2=ptr2->next;	
+		}
+	}
+	return head;
+} */
