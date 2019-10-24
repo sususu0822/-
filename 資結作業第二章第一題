@@ -1,0 +1,92 @@
+#include<stdio.h>
+#include<stdlib.h>
+typedef struct{
+	int pow;
+	int coef;
+}index;
+void print (index*);
+index* check(index*);
+int main(){
+	int i=0,j,fin_1,head_2,fin_2;
+	index a[2000];
+	while(1){
+		printf("��J�h�����@(�t��/����)�A��J�Y��0���X: ");
+		scanf("%d %d",&a[i].coef,&a[i].pow);
+		if(a[i].coef==0){
+			fin_1=i;
+			break;
+		}
+		i++;
+	}
+	//print(&a[0]);
+	printf("==================================================\n");
+	head_2=i;
+	//printf("%d %d\n",fin_1,head_2);
+	while(1){
+		printf("��J�h�����G(�t��/����)�A��J�Y��0���X: ");
+		scanf("%d %d",&a[i].coef,&a[i].pow);
+		if(a[i].coef==0){
+			fin_2=i;
+			break;
+		}
+		i++;
+	}
+	//print(&a[head_2]);
+	printf("==================================================\n");
+	//printf("%d",fin_2);
+	int add=fin_2;
+	//printf("%d",add);
+	for(i=0;i<fin_1;i++){
+		for(j=head_2;j<fin_2;j++){
+			a[add].coef=a[i].coef*a[j].coef;
+			a[add].pow=a[i].pow+a[j].pow;
+			add++;
+		}
+	}
+	check(&a[fin_2]);
+	//print(&a[add]);
+	printf("coef\tpow\n");
+	for(i=0;i<add;i++){
+		if(a[i].coef==0) continue;
+		printf("%d\t%d\n",a[i].coef,a[i].pow);
+	}
+}
+void print(index* a){
+	int i,j;
+	printf("coef\tpow\n");
+	for(i=0;;i++){
+		if(a[i].coef==0)break;
+		else{
+			printf("%d\t%d\n",a[i].coef,a[i].pow);
+		}
+	}
+}
+index* check (index* a){
+	int i,j,count=0;
+	index temp;
+	for(i=0;;i++){
+		if(a[i].coef==0) break;
+		else count++;
+	}
+	for(i=0;i<count;i++){
+		for(j=0;j<i;j++){
+			if(a[i].pow < a[j].pow){
+				temp.coef=a[i].coef;
+				a[i].coef=a[j].coef;
+				a[j].coef=temp.coef;
+				temp.pow=a[i].pow;
+				a[i].pow=a[j].pow;
+				a[j].pow=temp.pow;
+			}
+		}
+	}
+	for(i=0;i<count;i++){
+		for(j=0;j<i;j++){
+			if(a[i].pow==a[j].pow){
+			a[i].coef+=a[j].coef;
+			a[j].coef=0;
+			}
+		}
+	}
+	return a;
+}
