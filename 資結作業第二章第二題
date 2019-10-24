@@ -1,0 +1,64 @@
+#include<stdio.h>
+#include<stdlib.h>
+#include<time.h>
+int main(){
+	srand(time(NULL));
+	int i,j,l;
+	int m,k,count=0,random,less=0;
+	int now_i,now_j;
+	int move_i[8]={-1,0,1,1,1,0,-1,-1};
+	int move_j[8]={1,1,1,0,-1,-1,-1,0};
+	printf("input m*k : "); 
+	scanf(" %d %d",&m,&k);
+	printf("start pos : ");
+	scanf(" %d %d",&now_i,&now_j);
+	now_i--;
+	now_j--;
+	if(!(m<=40&&m>=2&&k<=40&&k>=2)){
+		printf("map set ERROR\n");
+		exit(1);
+	}
+	if(now_i>m||now_j>k){
+		printf("start pos ERROR\n");
+		exit(1);
+	}
+	int map[m][k];
+	for(i=0;i<m;i++){
+		for(j=0;j<k;j++){
+			map[i][j]=0;
+		}
+	}
+	map[now_i][now_j]++;
+	for(i=0;i<50000;i++){
+		do{
+			random=rand()%8;
+			if(now_i<0)	now_i=0;
+			if(now_j<0) now_j=0;
+			if(now_i>m)	now_i=m;
+			if(now_j>k)	now_j=k;
+			now_i+=move_i[random];
+			now_j+=move_j[random];	
+		}while(now_i<0||now_j<0||now_i>m-1||now_j>k-1);
+		map[now_i][now_j]++;
+		count++;
+		for(j=0;j<m;j++){
+			for(l=0;l<k;l++){
+				if(map[j][l] == 0){
+					less++;
+				}
+			}
+		}
+		if(less==0){
+			break;
+		}else{
+			less=0;
+		}
+	} 
+	for(i=0;i<m;i++){
+		for(j=0;j<k;j++){
+			printf("%4d ",map[i][j]);
+		}
+		printf("\n");
+	}
+	printf("count=%d\n",count);
+}
